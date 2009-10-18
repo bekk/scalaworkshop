@@ -1,5 +1,6 @@
 package no.bekk.liftworkshop.snippet
 
+import controller.LobbyActor
 import net.liftweb._
 import http._
 import util._
@@ -12,16 +13,26 @@ import xml.{Text, NodeSeq}
 
 
 class Lobby extends  {
-  def render(html: NodeSeq) = {
-    var users = List("User 1", "User 2")
+  def form(html: NodeSeq) = {
+    var username = ""
 
-    bind("users", html,
-      "test" -> Text("test"),
-      "list" -> users.flatMap(user =>
+    bind("login", html,
+      "username" -> text("", username = _),
+      "submit" -> submit("Log in", () => {
+        LobbyActor.addUser(username)
+      }))
+  }
+
+  def render(html: NodeSeq) = {
+    var users = LobbyActor.users.toSeq
+
+    var list = users.flatMap(user =>
         bind("user", chooseTemplate("users", "list", html),
           "username" -> Text(user)
-        )
-      )
+        ))
+
+    bind("users", html,
+      "list" -> list
     )
   }
 }

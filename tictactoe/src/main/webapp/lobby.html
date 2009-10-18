@@ -1,10 +1,23 @@
-<lift:surround with="default" at="content">
+<lift:surround with="default" at="content" xmlns:client="http://www.w3.org/2001/XMLSchema">
+    <lift:comet type="LobbyClientActor">
+        <client:login>
+            <label>Username:
+                <login:username><input/></login:username>
+            </label>
+            <login:submit><input type="submit"/></login:submit>
+        </client:login>
 
-    <lift:Lobby>
-        <ul>
-            <users:list>
-                <li><user:username>Username</user:username> [<a href="#">Challenge</a>]</li>
-            </users:list>
-        </ul>
-    </lift:Lobby>
+        <client:lobby>
+            Logged in as:
+            <lobby:currentUser>Username</lobby:currentUser>
+            <ul>
+                <lobby:list>
+                    <li>
+                        <list:username>Username</list:username>
+                        [<a href="#">Challenge</a>]
+                    </li>
+                </lobby:list>
+            </ul>
+        </client:lobby>
+    </lift:comet>
 </lift:surround>
