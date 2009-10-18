@@ -65,7 +65,10 @@ class LobbyClientActor extends CometActor with CometListenee {
         bind("boardCell", chooseTemplate("game", "board", defaultXml),
           "value" -> a(() => makeMove(index), Text(value))
         )
-      })
+      }),
+      "playerA" -> Text(currentGame.playerA),
+      "playerB" -> Text(currentGame.playerB),
+      "endGameLink" -> a(() => endCurrentGame, Text("End game"))
     )
   }
 
@@ -79,12 +82,23 @@ class LobbyClientActor extends CometActor with CometListenee {
     Noop
   }
 
+  def endCurrentGame = {
+    LobbyActor ! EndGame(currentGame)
+    Noop
+  }
+
+
   override def lowPriority = {
     case UpdateClient =>
       reRender(false)
 
     case JoinGame(game: Game) => {
       currentGame = game
+      reRender(false)
+    }
+
+    case LeaveGame(game: Game) => {
+      currentGame = null
       reRender(false)
     }
   }

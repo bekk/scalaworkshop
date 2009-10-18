@@ -10,8 +10,10 @@ import model.Game
 case class UpdateClient
 case class CreateGame(playerA:String, playerB:String)
 case class JoinGame(game: Game)
+case class LeaveGame(game: Game)
 case class MakeMove(player: String, game: Game, cell: Int)
 case class AddUser(username: String, clientActor: LobbyClientActor)
+case class EndGame(game: Game)
 
 object LobbyActor extends Actor with ListenerManager {
   var activeGames = HashSet[Game]()
@@ -23,6 +25,7 @@ object LobbyActor extends Actor with ListenerManager {
     case CreateGame(playerA: String, playerB: String) => createGame(playerA, playerB)
     case MakeMove(player: String, game: Game, cell: Int) => makeMove(player, game: Game, cell)
     case AddUser(username: String, clientActor: LobbyClientActor) => addUser(username, clientActor)
+    case EndGame(game: Game) => endGame(game)
   }
 
   def addUser(username: String, clientActor: LobbyClientActor) = {
@@ -43,6 +46,19 @@ object LobbyActor extends Actor with ListenerManager {
   def makeMove(player: String, game: Game, cell: Int) = {
     game.makeMove(player, cell)
     updateGame(game)
+  }
+
+  def endGame(game: Game) = {
+    activeGames.excl(game)
+
+    users.get(game.playerA) match {
+      case None => false
+      case Some(client) => client ! LeaveGame(game)
+    }
+    users.get(game.playerB) match {
+      case None => false
+      case Some(client) => client ! LeaveGame(game)
+    }
   }
 
   def updateGame(game: Game) = {
