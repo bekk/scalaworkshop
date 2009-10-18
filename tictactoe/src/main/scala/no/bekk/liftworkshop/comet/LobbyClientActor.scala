@@ -1,6 +1,7 @@
 package no.bekk.liftworkshop.comet
 
-import controller.{UpdateUserList, LobbyActor}
+import controller._
+import model.Game
 import net.liftweb.http.CometActor
 import net.liftweb._
 import http._
@@ -13,40 +14,78 @@ import BindHelpers._
 import xml.{Text, NodeSeq}
 
 class LobbyClientActor extends CometActor with CometListenee {
-  var username:String = ""
+  var username: String = ""
+  var currentGame: Game = null
+  
   protected def registerWith = LobbyActor
 
   def render = {
     if(username.equals("")) {
-      ajaxForm(
-        bind("login", chooseTemplate("client", "login", defaultXml),
-          "username" -> text("", username = _),
-          "submit" -> submit("Log in", () => {})) ++
-        hidden(() => {
-          LobbyActor.addUser(username)
-          reRender(false)
-        })
-      )
+      renderForm(defaultXml)
+    } else if(currentGame != null) {
+      println("rendering game board")
+      renderGame(defaultXml)
     } else {
-      // Fetch active users from Lobby, and filter out current user
-      println("Updating user list for user " + username)
-      var users = LobbyActor.users.filter(user => !user.equals(username)).toSeq
-
-      var list = users.flatMap(user =>
-        bind("list", chooseTemplate("lobby", "list", defaultXml),
-          "username" -> Text(user)
-        )
-      )
-
-      bind("lobby", chooseTemplate("client", "lobby", defaultXml),
-        "list" -> list,
-        "currentUser" -> Text(username)
-      )
+      renderLobby(defaultXml)
     }
   }
 
+  def renderForm(defaultXml: NodeSeq) = {
+    ajaxForm(
+      bind("login", chooseTemplate("client", "login", defaultXml),
+        "username" -> text("", username = _),
+        "submit" -> submit("Log in", () => {})) ++
+      hidden(() => {
+        LobbyActor ! AddUser(username, this)
+      })
+    )
+  }
+
+  def renderLobby(defaultXml: NodeSeq) = {
+    // Fetch active users from Lobby, and filter out current user
+    println("Updating user list for user " + username)
+    val users = LobbyActor.users.keySet.filter(user => !user.equals(username)).toSeq
+
+    val list = users.flatMap(user =>
+      bind("list", chooseTemplate("lobby", "list", defaultXml),
+        "username" -> Text(user),
+        "challengeLink" -> a(() => createGame(user), Text("Challenge"))
+      )
+    )
+
+    bind("lobby", chooseTemplate("client", "lobby", defaultXml),
+      "list" -> list,
+      "currentUser" -> Text(username)
+    )
+  }
+
+  def renderGame(defaultXml: NodeSeq) = {
+    bind("game", chooseTemplate("client", "game", defaultXml),
+      "board" -> currentGame.cells.zipWithIndex.flatMap({case (value, index) =>
+        bind("boardCell", chooseTemplate("game", "board", defaultXml),
+          "value" -> a(() => makeMove(index), Text(value))
+        )
+      })
+    )
+  }
+
+  def createGame(opponent: String) = {
+    LobbyActor ! CreateGame(username, opponent)
+    Noop
+  }
+
+  def makeMove(cell: Int) = {
+    LobbyActor ! MakeMove(username, currentGame, cell)
+    Noop
+  }
+
   override def lowPriority = {
-    case UpdateUserList =>
+    case UpdateClient =>
       reRender(false)
+
+    case JoinGame(game: Game) => {
+      currentGame = game
+      reRender(false)
+    }
   }
 }

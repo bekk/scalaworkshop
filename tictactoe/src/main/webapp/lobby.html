@@ -14,10 +14,18 @@
                 <lobby:list>
                     <li>
                         <list:username>Username</list:username>
-                        [<a href="#">Challenge</a>]
+                        [<list:challengeLink><a href="#">Challenge</a></list:challengeLink>]
                     </li>
                 </lobby:list>
             </ul>
         </client:lobby>
+
+        <client:game>
+            <div id="gameboard">
+                <game:board>
+                    <div class="boardCell"><boardCell:value /></div>
+                </game:board>
+            </div>
+        </client:game>
     </lift:comet>
 </lift:surround>
