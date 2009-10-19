@@ -2,15 +2,12 @@ package no.bekk.liftworkshop.comet
 
 import controller._
 import model.Game
-import net.liftweb.http.CometActor
 import net.liftweb._
 import http._
-import util._
 import js._
 import JsCmds._
 import JE._
 import SHtml._
-import BindHelpers._
 import xml.{Text, NodeSeq}
 
 class LobbyClientActor extends CometActor with CometListenee {
