@@ -17,6 +17,10 @@
       <name>Scala-Tools Maven2 Repository</name>
       <url>http://scala-tools.org/repo-releases</url>
     </repository>
+    <repository>
+        <id>pia-repository</id>
+        <url>http://www.pojosinaction.com/repository</url>
+    </repository>
   </repositories>
 
   <pluginRepositories>
@@ -24,6 +28,13 @@
       <id>scala-tools.org</id>
       <name>Scala-Tools Maven2 Repository</name>
       <url>http://scala-tools.org/repo-releases</url>
+    </pluginRepository>
+    <pluginRepository>
+        <id>pia-repository</id>
+        <url>http://www.pojosinaction.com/repository</url>
+        <snapshots>
+            <enabled>true</enabled>
+        </snapshots>
     </pluginRepository>
   </pluginRepositories>
 
@@ -131,6 +142,32 @@
           </buildcommands>
         </configuration>
       </plugin>
+        <plugin>
+           <groupId>net.chrisrichardson</groupId>
+           <artifactId>cloudtools-maven-plugin</artifactId>
+           <configuration>
+               <awsPropertiesFile>aws.properties</awsPropertiesFile>
+               <schemaName>ptrack</schemaName>
+               <schemaUsers>
+                   <param>
+                       ptrack:ptrack
+                   </param>
+               </schemaUsers>
+               <sqlScripts>
+               </sqlScripts>
+               <catalinaOptsBuilder>
+                   {builder, databasePrivateDnsName, slaves ->
+                       builder.arg("-server")
+                       builder.arg("-Xmx1000m")
+                       builder.prop("com.sun.management.jmxremote")
+                       builder.prop("com.sun.management.jmxremote.port", 8091)
+                       builder.prop("com.sun.management.jmxremote.authenticate", false)
+                       builder.prop("com.sun.management.jmxremote.ssl", false)
+                       builder.prop("ptrack.application.environment", "ec2")
+                       builder.prop("jdbc.db.server", databasePrivateDnsName)}
+               </catalinaOptsBuilder>
+           </configuration>
+       </plugin>
     </plugins>
   </build>
   <reporting>
