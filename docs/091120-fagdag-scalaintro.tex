@@ -1,0 +1,323 @@
+\documentclass[norsk]{beamer}
+
+\usepackage[latin1]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{babel,textcomp,pdfpages}
+\usepackage{graphicx}
+\usepackage{listings}
+\usepackage{color}
+\usepackage{tikz}
+\usetikzlibrary{shapes,arrows}
+
+\definecolor{dkgreen}{rgb}{0,0.6,0}
+\definecolor{gray}{rgb}{0.5,0.5,0.5}
+\definecolor{mauve}{rgb}{0.58,0,0.82}
+
+\setbeamercolor{upcol}{fg=white,bg=blue!70}
+\setbeamercolor{lowcol}{fg=white,bg=blue!40}
+
+% "define" Scala
+\lstdefinelanguage{scala}{
+  morekeywords={abstract,case,catch,class,def,
+    do,else,extends,false,final,finally,
+    for,if,implicit,import,match,mixin,
+    new,null,object,override,package,
+    private,protected,requires,return,sealed,
+    super,this,throw,trait,true,try,
+    type,val,var,while,with,yield},
+  otherkeywords={=>,<-,<\%,<:,>:,\#,@},
+  sensitive=true,
+  morecomment=[l]{//},
+  morecomment=[n]{/*}{*/},
+  morestring=[b]",
+  morestring=[b]',
+  morestring=[b]"""
+}
+
+% Default settings for code listings
+\lstset{frame=tb,
+  language=scala,
+  aboveskip=3mm,
+  belowskip=3mm,
+  showstringspaces=false,
+  columns=flexible,
+  basicstyle={\small\ttfamily},
+  numbers=none,
+  numberstyle=\tiny\color{gray},
+  keywordstyle=\color{blue},
+  commentstyle=\color{dkgreen},
+  stringstyle=\color{mauve},
+  frame=none,
+  breaklines=true,
+  breakatwhitespace=true
+  tabsize=3
+}
+
+\usetheme{Pittsburgh}
+\setbeamertemplate{navigation symbols}{}
+
+\title{Scala -- Introduksjon}
+\author{Eivind Barstad Waaler}
+\institute{BEKK/UiO}
+\date{Fagdag -- 20. november 2009}
+
+\begin{document}
+
+\frame{\titlepage}
+
+\section{Introforedrag}
+\subsection{Introduksjon til Scala}
+\begin{frame}{Hva er Scala?}
+  \begin{itemize}
+    \item Objektorientering + Funksjonell programmering
+    \item Statisk/sterkt typet -- kompilert
+    \item Java bytecode $\rightarrow$ JVM
+    \item Kort historie:
+      \begin{itemize}
+        \item 1995 -- Pizza $\rightarrow$ GJ $\rightarrow$ javac \& Java generics
+        \item 2001 -- Scala design påbegynt av Martin Odersky (EPFL)
+        \item 2003 -- Scala versjon 1.0
+        \item 2006 -- Scala versjon 2.0
+        \item I dag -- Scala versjon 2.7.7 $\rightarrow$ 2.8
+      \end{itemize}
+  \end{itemize}
+\end{frame}
+
+\tikzstyle{block} = [rectangle, draw, fill=blue!20, text width=5em, text centered, rounded corners, minimum height=4em]
+\tikzstyle{line} = [draw, -latex']
+\tikzstyle{cloud} = [draw, ellipse,fill=red!20, node distance=2.5cm, minimum height=2em]
+\begin{frame}[fragile]
+  \frametitle{Scala \& Java}
+  \begin{figure}
+  \begin{tikzpicture}[node distance = 2cm, auto]
+    % Place nodes
+    \node [cloud] (class) {Java Bytecode (.class)};
+    \node [block, left of=class, above of=class] (scalacompile) {Scala Kompilator (scalac)};
+    \node [cloud, left of=scalacompile] (scala) {.scala};
+    \node [block, right of=class, above of=class] (javacompile) {Java Kompilator (javac)};
+    \node [cloud, right of=javacompile] (java) {.java};
+    \node [block, below of=class] (jvm) {Java Virtual Machine};
+    \node [block, below of=scala] (scalalib) {Scala API (.jar)};
+    % Draw edges
+    \path [line] (scalacompile) -- (class);
+    \path [line] (javacompile) -- (class);
+    \path [line] (class) -- (jvm);
+    \path [line] (scala) -- (scalacompile);
+    \path [line] (java) -- (javacompile);
+    \path [dotted, line] (scalalib) -- (jvm);
+  \end{tikzpicture}
+  \end{figure}
+\end{frame}
+
+\subsection{Eksempler}
+
+\begin{frame}{REPL -- Read Eval Print Loop}
+  \begin{itemize}
+    \item Scala interpreter
+    \item Skriv bare \texttt{scala} på kommandolinjen
+    \item Maven prosjekt: \texttt{mvn scala:console}
+    \item Scala 2.8 $\rightarrow$ Command completion + Interactive debugging
+  \end{itemize}
+  \vfill
+  \begin{beamerboxesrounded}[upper=upcol,lower=lowcol,shadow=true]{Demo:}
+    REPL med noen enkle uttrykk..
+  \end{beamerboxesrounded}
+\end{frame}
+
+\begin{frame}[fragile]
+  \frametitle{\texttt{var} og \texttt{val}}
+  \begin{lstlisting}
+// val - immutable (kan ikke endre verdi)
+val constant = 5
+constant *= 2 // error: reassignment to val
+
+// var - mutable (variabel verdi)
+var tall = 3
+tall *= 2 // tall = tall * 2 = 3 * 2 = 6
+  \end{lstlisting}
+\end{frame}
+
+\begin{frame}[fragile]
+  \frametitle{Syntaks Basis}
+  \begin{lstlisting}
+// Typen skrives bak
+val navn: String = "Eivind"
+val alder: Int = 33
+
+// Eller oppdages automatisk av kompilator (inference)
+val firma = "Bekk"
+val ansatte = 210
+
+// Metoder med type og returverdi
+def storBokstav(s: String): String = {
+  s.toUpperCase
+}
+// Returtype kan ofte droppes, samt klammene:
+def storBokstav(s: String) = s.toUpperCase
+// Metoder uten returverdi (Unit -> void i Java)
+def skriv(s: String) { println(s) }
+  \end{lstlisting}
+\end{frame}
+
+\begin{frame}[fragile]
+  \frametitle{Klasser og Objekter}
+  \begin{lstlisting}
+// Klasser omtrent som i Java
+class Person(val navn: String, val alder: Int) {
+  def erGammel = alder > 30
+}
+
+val p = new Person("eivind", 33)
+p.erGammel // true :(
+
+// Objekter er singletons
+object Person {
+  def apply(navn: String, alder: Int) =
+    new Person(navn, alder)
+}
+
+val p2 = Person("erlend", 27)
+  \end{lstlisting}
+\end{frame}
+
+\begin{frame}[fragile]
+  \frametitle{Traits}
+  \begin{lstlisting}
+// Traits ligner klasser
+trait Hilse {
+  def siHei(s: String) = "Heihei " + s
+}
+trait Forlate {
+  def morna(s: String) = "Hadetbra, " + s
+}
+
+// Funker som mixins -> Java aop?
+class FinPerson(n: String, a: Int)
+  extends Person(n, a) with Hilse with Forlate
+
+val fin = new FinPerson("oc", 27)
+fin.erGammel // false :)
+fin.siHei("Kari") // "Heihei Kari"
+  \end{lstlisting}
+\end{frame}
+
+\begin{frame}[fragile]
+  \frametitle{Høyere-ordens Funksjoner}
+  \begin{lstlisting}
+// Funksjon som variabel
+val doble = (i: Int) => i * 2
+
+// Funksjon som parameter
+val tall = Array(1, 2, 3, 4, 5)
+val dobleTall = tall.map(doble)
+
+// Funksjon som returverdi (og Closure faktisk)
+val grense = (g: Int) => (i: Int) => i < g
+val grense10 = grense(10)
+grense(9) // true
+grense(10) // false
+  \end{lstlisting}
+\end{frame}
+
+\begin{frame}[fragile]
+  \frametitle{Anonyme Metoder}
+  \begin{lstlisting}
+val tall = Array(5, 4, 3, 2, 1)
+
+// Finn partall - anonym funksjon
+val partall = tall.filter((i: Int) => i % 2 == 0)
+// Eller med _ som anonym parameter
+val partall = tall.filter(_ % 2 == 0)
+
+// Eksempel fra forrige slide
+val dobleTall = tall.map(_ * 2)
+
+// Eller personklassen vår
+val personer = List(Person("eivind", 33),
+  Person("erlend", 27), Person("oc", 27))
+val (gamle, unge) = personer.partition(_.erGammel)
+// Scala har tuples :)
+  \end{lstlisting}
+\end{frame}
+
+\begin{frame}[fragile]
+  \frametitle{\texttt{if}, \texttt{else} og \texttt{while}}
+  \begin{lstlisting}
+val p = Person("eivind", 33)
+
+// if/else som Java
+if (p.erGammel) println(p.navn + " er gammel")
+
+// if/else returnerer verdi - ingen ternary op
+val alder = if (p.erGammel) "gammel" else "ung"
+
+// while/do-while returnerer ingen verdi - Unit
+while (true) println("evig løkke..")
+
+do { println("evig løkke..") } while (true)
+
+// FP liker ikke while-løkker...
+  \end{lstlisting}
+\end{frame}
+
+\begin{frame}[fragile]
+  \frametitle{For Comprehensions}
+  \begin{lstlisting}
+// Man bruker en eller flere "generators"
+for (i <- 0 to 10) println(i)
+for (i <- 0 to 10; j <- 0 to 10) println(i + "," + j)
+
+// Kan gi en verdi - som Range
+val doble = for (i <- 0 to 10) yield (i * 2)
+
+// Har også "filtering" og "binding"
+val personer = List(Person("eivind", 33), ...
+// Med {} slipper man ; mellom uttrykkene
+val gammelE = for {
+  person <- personer // generator
+  if (person.erGammel) // filter
+  navn = person.navn // binding
+  if (navn startsWith "e") // filter
+} yield { navn.toUpperCase }
+  
+  \end{lstlisting}
+\end{frame}
+
+\begin{frame}[fragile]
+  \frametitle{Pattern Matching}
+  \begin{lstlisting}
+// Kan minne om en veldig kraftig switch
+def sjekk(obj: Any) = obj match {
+  case s:String => "String: " + s
+  case 42 => "The answer 42"
+  case i: Int => "Some other int: " + i
+  case (s:String, i:Int) => "SI tuple: " + s + " " + i
+  case _ => "Something else.. " + obj
+}
+
+sjekk("eivind")
+sjekk(42)
+sjekk(33)
+sjekk("eivind", 33)
+sjekk(42.1)
+sjekk(new Person("eivind", 33))
+  \end{lstlisting}
+\end{frame}
+
+\subsection{Ressurser}
+\frame{
+  \frametitle{Ressurser}
+  \begin{beamerboxesrounded}[upper=upcol,lower=lowcol,shadow=true]{Scala Website:}
+    \url{http://www.scala-lang.org/}
+  \end{beamerboxesrounded}
+  \vfill
+  \begin{beamerboxesrounded}[upper=upcol,lower=lowcol,shadow=true]{Programming in Scala (ligger i Confluence):}
+    \url{https://nanna.bekk.no/confluence/download/attachments/5082351/ProgInScala1EdV6.pdf}
+  \end{beamerboxesrounded}
+  \vfill
+  \begin{beamerboxesrounded}[upper=upcol,lower=lowcol,shadow=true]{ScalaDoc API:}
+    \url{http://www.scala-lang.org/docu/files/api/index.html}
+  \end{beamerboxesrounded}
+}
+
+\end{document}
