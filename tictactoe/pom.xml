@@ -142,7 +142,7 @@
           </buildcommands>
         </configuration>
       </plugin>
-        <plugin>
+<!--        <plugin>
            <groupId>net.chrisrichardson</groupId>
            <artifactId>cloudtools-maven-plugin</artifactId>
            <configuration>
@@ -167,7 +167,7 @@
                        builder.prop("jdbc.db.server", databasePrivateDnsName)}
                </catalinaOptsBuilder>
            </configuration>
-       </plugin>
+       </plugin>-->
     </plugins>
   </build>
   <reporting>

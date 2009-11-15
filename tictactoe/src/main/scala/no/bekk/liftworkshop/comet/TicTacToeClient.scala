@@ -10,11 +10,11 @@ import JE._
 import SHtml._
 import xml.{Text, NodeSeq}
 
-class LobbyClientActor extends CometActor with CometListenee {
+class TicTacToeClient extends CometActor with CometListenee {
   var username: String = ""
   var currentGame: Game = null
   
-  protected def registerWith = LobbyActor
+  protected def registerWith = TicTacToeServer
 
   def render = {
     if(username.equals("")) {
@@ -33,7 +33,7 @@ class LobbyClientActor extends CometActor with CometListenee {
         "username" -> text("", username = _),
         "submit" -> submit("Log in", () => {})) ++
       hidden(() => {
-        LobbyActor ! AddUser(username, this)
+        TicTacToeServer ! AddUser(username, this)
       })
     )
   }
@@ -41,7 +41,7 @@ class LobbyClientActor extends CometActor with CometListenee {
   def renderLobby(defaultXml: NodeSeq) = {
     // Fetch active users from Lobby, and filter out current user
     println("Updating user list for user " + username)
-    val users = LobbyActor.users.keySet.filter(user => !user.equals(username)).toSeq
+    val users = TicTacToeServer.users.keySet.filter(user => !user.equals(username)).toSeq
 
     val list = users.flatMap(user =>
       bind("list", chooseTemplate("lobby", "list", defaultXml),
@@ -70,17 +70,17 @@ class LobbyClientActor extends CometActor with CometListenee {
   }
 
   def createGame(opponent: String) = {
-    LobbyActor ! CreateGame(username, opponent)
+    TicTacToeServer ! CreateGame(username, opponent)
     Noop
   }
 
   def makeMove(cell: Int) = {
-    LobbyActor ! MakeMove(username, currentGame, cell)
+    TicTacToeServer ! MakeMove(username, currentGame, cell)
     Noop
   }
 
   def endCurrentGame = {
-    LobbyActor ! EndGame(currentGame)
+    TicTacToeServer ! EndGame(currentGame)
     Noop
   }
 

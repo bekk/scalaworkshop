@@ -1,7 +1,7 @@
 package no.bekk.liftworkshop.controller
 
 import collection.mutable.{HashSet, HashMap}
-import comet.LobbyClientActor
+import comet.TicTacToeClient
 import net.liftweb.http.ListenerManager
 import scala.actors.Actor
 import model.Game
@@ -12,23 +12,23 @@ case class CreateGame(playerA:String, playerB:String)
 case class JoinGame(game: Game)
 case class LeaveGame(game: Game)
 case class MakeMove(player: String, game: Game, cell: Int)
-case class AddUser(username: String, clientActor: LobbyClientActor)
+case class AddUser(username: String, clientActor: TicTacToeClient)
 case class EndGame(game: Game)
 
-object LobbyActor extends Actor with ListenerManager {
+object TicTacToeServer extends Actor with ListenerManager {
   var activeGames = HashSet[Game]()
-  var users = HashMap[String, LobbyClientActor]()
+  var users = HashMap[String, TicTacToeClient]()
 
   def createUpdate = UpdateClient
 
   override def lowPriority = {
     case CreateGame(playerA: String, playerB: String) => createGame(playerA, playerB)
     case MakeMove(player: String, game: Game, cell: Int) => makeMove(player, game: Game, cell)
-    case AddUser(username: String, clientActor: LobbyClientActor) => addUser(username, clientActor)
+    case AddUser(username: String, clientActor: TicTacToeClient) => addUser(username, clientActor)
     case EndGame(game: Game) => endGame(game)
   }
 
-  def addUser(username: String, clientActor: LobbyClientActor) = {
+  def addUser(username: String, clientActor: TicTacToeClient) = {
     users.put(username, clientActor)
     println("Added user " + username)
     updateListeners
@@ -72,6 +72,6 @@ object LobbyActor extends Actor with ListenerManager {
     }
   }
 
-  // Siden dette er et object må LobbyActor starte seg selv
+  // Siden dette er et object må TicTacToeServer starte seg selv
   start  
 }
