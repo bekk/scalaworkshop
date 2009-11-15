@@ -21,11 +21,13 @@ class Boot {
 
     // where to search snippet
     LiftRules.addToPackages("no.bekk.liftworkshop.blog")
-    Schemifier.schemify(true, Log.infoF _, User)
+    Schemifier.schemify(true, Log.infoF _, User, Post)
 
     // Build SiteMap
     val entries =
       Menu(Loc("Home", List("index"), "Home")) ::
+      Menu(Loc("View post", List("viewpost"), "View post", Hidden)) ::
+      Post.menus :::
       User.sitemap
     
     LiftRules.setSiteMap(SiteMap(entries:_*))
