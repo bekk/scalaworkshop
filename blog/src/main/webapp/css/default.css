@@ -1,0 +1,28 @@
+h2, h3, h4, h5, h6 {
+    margin-bottom: 0;
+}
+
+/*** post list ***/
+.blogposts {
+    margin: 0;
+    padding: 0;
+    list-style: none none;
+}
+
+.blogposts h3 a {
+    text-decoration: none;
+    color: black;
+}
+.blogposts h3 a:hover {
+    text-decoration: underline;
+}
+
+.blogposts .date {
+    color: #ccc;
+}
+
+/*** blog post ***/
+.blogpost .date {
+    color: #ccc;
+    margin-bottom: 1em;
+}
