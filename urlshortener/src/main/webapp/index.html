@@ -1,9 +1,15 @@
 <lift:surround with="default" at="content">
-  <lift:shortUrlCreator.form type="submission:form" form="post">
+  <lift:ShortUrlCreator.form type="submission:form" form="post">
       <form>
           <label>Url: <creator:url><input /></creator:url></label>
           <creator:submit><input type="submit" value="Shorten URL" /></creator:submit>
       </form>
-  </lift:shortUrlCreator.form>
+  </lift:ShortUrlCreator.form>
+
+  <lift:ShortUrlCreator.list>
+      <ul>
+          <li><a href="#">f43rf4</a> (http://www.original.url)</li>
+      </ul>
+  </lift:ShortUrlCreator.list>
 </lift:surround>
 

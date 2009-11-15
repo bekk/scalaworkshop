@@ -22,6 +22,7 @@ class Boot {
     // where to search snippet
     LiftRules.addToPackages("no.bekk.liftworkshop.urlshortener")
     Schemifier.schemify(true, Log.infoF _, User)
+    Schemifier.schemify(true, Log.infoF _, ShortenedUrl)
 
     // Build SiteMap
     val entries = Menu(Loc("Home", List("index"), "Home")) :: User.sitemap
