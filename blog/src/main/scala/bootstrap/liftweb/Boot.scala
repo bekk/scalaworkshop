@@ -1,7 +1,6 @@
 package bootstrap.liftweb
 
 import _root_.net.liftweb.util._
-import _root_.net.liftweb.http._
 import _root_.net.liftweb.sitemap._
 import _root_.net.liftweb.sitemap.Loc._
 import Helpers._
@@ -9,6 +8,7 @@ import _root_.net.liftweb.mapper.{DB, ConnectionManager, Schemifier, DefaultConn
 import _root_.java.sql.{Connection, DriverManager}
 import _root_.no.bekk.liftworkshop.blog.model._
 import _root_.javax.servlet.http.{HttpServletRequest}
+import net.liftweb.http._
 
 /**
   * A class that's instantiated early and run.  It allows the application
@@ -26,8 +26,8 @@ class Boot {
     // Build SiteMap
     val entries =
       Menu(Loc("Home", List("index"), "Home")) ::
-      Menu(Loc("View post", List("viewpost"), "View post", Hidden)) ::
       Post.menus :::
+      Menu(Loc("ViewPost", List("post") -> true, "View Post", Hidden)) ::
       User.sitemap
     
     LiftRules.setSiteMap(SiteMap(entries:_*))
@@ -45,6 +45,16 @@ class Boot {
       Full(() => LiftRules.jsArtifacts.hide("ajax-loader").cmd)
 
     LiftRules.early.append(makeUtf8)
+
+    /*
+     * Define component url's
+     */
+    LiftRules.rewrite.append {
+      case RewriteRequest(
+        ParsePath("post" :: "view" :: id :: Nil, _, _, _),
+        _, _
+      ) => RewriteResponse("post" :: "view" :: Nil, Map("id" -> id))
+    }
 
     S.addAround(DB.buildLoanWrapper)
   }

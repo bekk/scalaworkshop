@@ -1,16 +1,16 @@
 <lift:surround with="default" at="content">
     <h2>Latest posts</h2>
-
     <ul class="blogposts">
-        <li><h3><a href="viewpost">Post title</a></h3>
-            <div class="date">Created 2009-11-20 @ 11:00</div>
-            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis varius neque a augue aliquam dapibus.
-               Aliquam et turpis ligula, et ultricies lacus. Nullam eros nisi, varius in semper quis, ultricies
-               nec sapien. Morbi mauris nibh, tempor non feugiat sit amet, tempus ut quam. In tincidunt eros quis
-               mauris ullamcorper sit amet egestas massa sodales. Nunc fermentum egestas venenatis. Sed a felis id
-               ipsum dignissim feugiat ac non... <a href="viewpost" class="readmore">Read more &raquo;</a></p>
-        </li>
+        <lift:ListLatestPosts>
+            <li><h3><a post:view_href="post/view/1"><post:title>Post title</post:title></a></h3>
+                <div class="date"><post:createdAt>Created 2009-11-20 @ 11:00</post:createdAt></div>
+                <p><post:summary>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis varius neque a augue aliquam dapibus.
+                   Aliquam et turpis ligula, et ultricies lacus. Nullam eros nisi, varius in semper quis, ultricies
+                   nec sapien. Morbi mauris nibh, tempor non feugiat sit amet, tempus ut quam. In tincidunt eros quis
+                   mauris ullamcorper sit amet egestas massa sodales. Nunc fermentum egestas venenatis. Sed a felis id
+                   ipsum dignissim feugiat ac non...</post:summary> <a href="viewpost" class="readmore">Read more &raquo;</a></p>
+            </li>
+        </lift:ListLatestPosts>
     </ul>
-
 </lift:surround>
 
