@@ -9,11 +9,7 @@ import net.liftweb.http.S
 import net.liftweb.http.SHtml._
 
 
-/**
- * 
- */
 class CreatePost {
-
   def render(html: NodeSeq) = {
     val post = Post.create
 

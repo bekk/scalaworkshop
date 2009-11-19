@@ -29,6 +29,8 @@ class Post extends LongKeyedMapper[Post] with IdPK {
   object createdAt extends MappedDateTime(this) {
     override def displayName = "Created at"
   }
+
+  def comments = Comment.findAll(By(Comment.post, this.id))
 }
 
 object Post extends Post with LongKeyedMetaMapper[Post] with CRUDify[Long, Post] {

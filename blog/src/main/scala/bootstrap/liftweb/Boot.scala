@@ -21,7 +21,7 @@ class Boot {
 
     // where to search snippet
     LiftRules.addToPackages("no.bekk.liftworkshop.blog")
-    Schemifier.schemify(true, Log.infoF _, User, Post)
+    Schemifier.schemify(true, Log.infoF _, User, Post, Comment)
 
     // Build SiteMap
     val entries =

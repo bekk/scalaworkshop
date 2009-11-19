@@ -16,7 +16,6 @@ class ViewPost {
   def render(html: NodeSeq) = {
     val post = Post.findByKey(id.toLong).open_!
 
-    
     bind("post", html,
       "title" -> post.title,
       "summary" -> post.summary,

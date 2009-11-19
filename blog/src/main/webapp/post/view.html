@@ -22,4 +22,20 @@
             </div>
         </div>
     </lift:ViewPost>
+
+    <h3>New comment</h3>
+    <lift:CreateComment form="POST">
+
+    </lift:CreateComment>
+
+    <h3>Comments</h3>
+        <ul class="comments">
+            <lift:ViewCommentsForPost>
+                <li>
+                    <h3><comment:title>Title</comment:title></h3>
+                    <div class="body"><comment:body>Comment body</comment:body></div>
+                </li>
+            </lift:ViewCommentsForPost>
+        </ul>
+
 </lift:surround>
