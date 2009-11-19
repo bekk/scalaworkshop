@@ -28,6 +28,7 @@ class Boot {
       Menu(Loc("Home", List("index"), "Home")) ::
       Post.menus :::
       Menu(Loc("ViewPost", List("post") -> true, "View Post", Hidden)) ::
+      Menu(Loc("CreatePost", List("post", "create"), "Create Post")) ::
       User.sitemap
     
     LiftRules.setSiteMap(SiteMap(entries:_*))

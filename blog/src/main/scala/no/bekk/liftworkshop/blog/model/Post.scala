@@ -34,10 +34,11 @@ class Post extends LongKeyedMapper[Post] with IdPK {
 object Post extends Post with LongKeyedMetaMapper[Post] with CRUDify[Long, Post] {
   override def fieldOrder = title :: summary :: body :: Nil
   override def viewMenuLoc = Empty
+  override def createMenuLoc = Empty
  
   override def beforeCreate = {
     List((post: Post) => {
-      post.createdAt.setFromAny(new Date)
+      post.createdAt(new Date)
     })
   }
 }

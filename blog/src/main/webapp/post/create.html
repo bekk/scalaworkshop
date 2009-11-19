@@ -1,0 +1,15 @@
+<lift:surround with="default" at="content">
+    <lift:CreatePost form="POST">
+        <div class="blogpost">
+            <div class="field title">
+                <label>Title:</label><post:title><input /></post:title>
+            </div>
+            <div class="field summary">
+                <label>Summary:</label><post:summary><input /></post:summary>
+            </div>
+            <div class="field body">
+                <label>Body:</label><post:body><input /></post:body>
+            </div>
+        </div>
+    </lift:CreatePost>
+</lift:surround>

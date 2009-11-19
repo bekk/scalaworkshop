@@ -2,10 +2,18 @@ h2, h3, h4, h5, h6 {
     margin-bottom: 0;
 }
 
+label {
+    margin-top: 1em;
+    display: block;
+}
+
 /*** post list ***/
 .blogposts {
     margin: 0;
     padding: 0;
+}
+
+.blogposts li {
     list-style: none none;
 }
 
